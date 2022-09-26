@@ -8,7 +8,7 @@ class DBManager {
   private $dbhost = 'localhost';
   private $dbuser = 'root';
   private $dbpass = '';
-  private $dbname = 'ejerciciologin';
+  private $dbname = 'sistemaspropietarios';
 
   public function conexion () {
 
@@ -23,7 +23,7 @@ class DBManager {
       $arrayError = array("error1"=>($connect->connect_errno),
                         "error2"=>$connect->connect_error);
       $error = json_encode($arrayError);
-      //echo "Error de Connexion ($connect->connect_errno) $connect->connect_error\n";
+      echo "Error de Connexion ($connect->connect_errno) $connect->connect_error\n";
 
       header('Location: error_conexion.php?error='.$error);
 
@@ -31,7 +31,7 @@ class DBManager {
       //Esto es una prueba 
 
     } else {
-      //echo "Conectado";
+      echo "Conectado";
       return $connect;
 
     }
