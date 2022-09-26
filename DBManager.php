@@ -28,6 +28,7 @@ class DBManager {
       header('Location: error_conexion.php?error='.$error);
 
       //exit;
+      //Esto es una prueba 
 
     } else {
       //echo "Conectado";
