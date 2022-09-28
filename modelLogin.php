@@ -16,14 +16,14 @@ __DATA_RETURN($response);
 function fnLogin($response){
     $DB = new DB;
 
-    $pwd = $response->password;
-    $email = $response->email;
+    $pwd = $response->usuario->password;
+    $email = $response->usuario->email;
 
     $query = "SELECT * FROM vw_usuarioPerfil WHERE password = md5('{$pwd}') AND correo = '{$email}'";
 
     $data = $DB->getAll($query);
 
-    echo ($data);
+    echo json_encode($data);
 
 /*
     if( isset($data[0]['existe']) == "1" ){
