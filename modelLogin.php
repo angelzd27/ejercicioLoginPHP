@@ -1,7 +1,12 @@
 <?php
-include_once "../model/util/ReturnData.php";
-include_once "db/DB.class.php";
-require_once "Auth.php";
+    header("Access-Control-Allow-Headers: Authorization, Cache-Control, Content-Type, X-Requested-With");
+    # header("Access-Control-Allow-Headers: X-Requested-With, Content-type, Origin, Cache-Control, Pragma, Authorization, Accept, Accept-Encoding");
+    header("Access-Control-Allow-Origin: *");
+    header('content-type: application/json; charset=utf-8');
+    
+include_once "./ReturnData.php";
+include_once "./DB.class.php";
+//require_once "Auth.php";
 
 $response = json_decode(file_get_contents('php://input'));
 
@@ -11,15 +16,16 @@ __DATA_RETURN($response);
 function fnLogin($response){
     $DB = new DB;
 
-    $pwd = $response->usuario->password;
+    $pwd = $response->password;
+    $email = $response->email;
 
-    $query = "SELECT 1 AS existe, idUsuario, 
-              CONCAT(nombre,' ',apellido_paterno,' ',apellido_materno) AS usuario
-              FROM tbl_usuario WHERE email = '{$response->usuario->email}' AND password = md5('{$pwd}')";
+    $query = "SELECT * FROM vw_usuarioPerfil WHERE password = md5('{$pwd}') AND correo = '{$email}'";
 
     $data = $DB->getAll($query);
 
+    echo ($data);
 
+/*
     if( isset($data[0]['existe']) == "1" ){
 
         $result['nombre']  = $data;
@@ -45,7 +51,7 @@ function fnLogin($response){
         echo json_encode($output);
         exit();*/
 
-
+/*
         $_token = Auth::SignIn($result);
 
         $output['token'] = $_token;
@@ -58,5 +64,6 @@ function fnLogin($response){
     }
 
     echo json_encode($output);
+    */
 
 }
