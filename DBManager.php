@@ -31,7 +31,6 @@ class DBManager {
       //Esto es una prueba 
 
     } else {
-      echo "Conectado";
       return $connect;
 
     }
