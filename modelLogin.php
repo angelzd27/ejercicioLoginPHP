@@ -17,46 +17,43 @@ function fnLogin($response){
     $DB = new DB;
 
     $pwd = $response->usuario->password;
-    $email = $response->usuario->email;
+    //$correo = $response->usuario->correo;
 
-    $query = "SELECT * FROM vw_usuarioPerfil WHERE password = md5('{$pwd}') AND correo = '{$email}'";
+    $query = "SELECT 1 AS existe, id_usuario, 
+    CONCAT(usuario,' ',correo,' ',activo) AS usuario
+    FROM vw_usuarioperfil WHERE correo = '{$response->usuario->correo}' AND password = md5('{$pwd}')";
 
     $data = $DB->getAll($query);
+    
 
-    echo json_encode($data);
-
-/*
     if( isset($data[0]['existe']) == "1" ){
 
-        $result['nombre']  = $data;
-        $_idUsuario  = $data[0]['idUsuario'];
+        $result['nombre'] = $data;
+        $_idUsuario = $data[0]['id_usuario'];
 
         $result['error'] =  false;
         $result['message'] = "El usuario existe";
 
-        $queryMenu = "SELECT M.* FROM tblmenu AS M INNER JOIN tblperfilmenu AS PM ON M.idMenu=PM.idMenu
-        INNER JOIN tblperfil AS P ON PM.idPerfil = P.idPerfil 
-        INNER JOIN tblusuario AS UP ON P.idPerfil = UP.idPerfil 
-        WHERE M.activo=1 AND UP.activo = 1 AND UP.idUsuario = $_idUsuario ORDER BY M.orden";
+        $queryMenu = "SELECT M.* FROM tbl_recursos AS M INNER JOIN perfil_recursos AS PM ON M.id=PM.id_recurso
+        INNER JOIN tbl_perfil AS P ON PM.id_perfil = P.id
+        INNER JOIN vw_usuarioperfil AS UP ON P.id = UP.id_perfil
+        WHERE UP.activo = 1 AND UP.id_usuario = $_idUsuario ORDER BY M.orden";
 
         $result['menu'] = $DB->getAll($queryMenu);
 
-        $querySucursal = "SELECT SUC.idSucursal, UPPER(SUC.nombre) AS nombre FROM tblsucursal AS SUC INNER JOIN tblusuariosucursal AS USUC ON SUC.idSucursal=USUC.idSucursal 
-        WHERE USUC.idUsuario = $_idUsuario";
-
-        $result['sucursal'] = $DB->getAll($querySucursal);
+       
 
         /*$output['data'] = $result['menu'];
         $output['query2'] = $queryMenu;
         echo json_encode($output);
-        exit();*/
+        exit();
 
-/*
-        $_token = Auth::SignIn($result);
 
-        $output['token'] = $_token;
+
+        
+        */
+        $output['data'] = $result['menu'];
         $output['error'] = false;
-        $output['url'] = $result['menu'][0]['url'];
     }else{
         $output['error'] = true;
         $output['message'] ="No existe el usuario.";
@@ -64,6 +61,6 @@ function fnLogin($response){
     }
 
     echo json_encode($output);
-    */
+    
 
 }
