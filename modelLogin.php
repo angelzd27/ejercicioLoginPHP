@@ -124,28 +124,4 @@ function fnDelete($response){
         ));
     }
 }
-
-function fnUpdatePWD($response){
-    try {
-        $DB = new DB;
-        //SET CAMPOS TABLA
-        $arrSQL = $response->usuario;
-
-        $correo=$response->usuario->correo;
-       
-        $result = $DB->update($arrSQL, "tbl_usuarios", "correo= '$correo'");
-
-    echo json_encode($result);
-
-    } catch (Exception $e) {
-        http_response_code(401);
-
-        echo json_encode(array(
-            "haserror" => true,
-            "message" => "Access denied.",
-            "error" => $e->getMessage()
-        ));
-    }
-}
-
 ?>
