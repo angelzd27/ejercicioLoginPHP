@@ -5,7 +5,7 @@ class DBManager {
   /**
   * Gestiona la conexión con la base de datos
   */
-  private $dbhost = 'localhost';
+  private $dbhost = 'localhost:3307';
   private $dbuser = 'root';
   private $dbpass = '';
   private $dbname = 'sistemaspropietarios';

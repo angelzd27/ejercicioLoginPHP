@@ -7,7 +7,7 @@ include_once 'DBManager.php';
 
 class DB{
 
-  /*var $con;
+  var $con;
 	var $DB;
 
 
@@ -15,10 +15,10 @@ class DB{
   function __construct(){
 		$this->DB = new DBManager;
  		$this->con = $this->DB->conexion();
- 	}*/
+ 	}
 
   //Esto lo comento porque no se usa!!!!
-  /*
+  
   function insert($p_datos,$table){
 
     $DB = new DBManager;
@@ -44,7 +44,7 @@ class DB{
        //return true;
         $data["error"] = false;
         $data["message"] = "Se realizo el registro con exito";
-        $data["id"] = $con->insert_id;  
+        $data["id"] = $con->insert_id; //se va devolver el id con el cual se hizo la operación  
 
      }
 
@@ -52,7 +52,7 @@ class DB{
 
   }
 
-  function update($p_datos,$p_table,$p_where){
+  function update($p_datos,$p_table,$p_where){ //pasar los parametros , datos(la clave) y el nombre de la tabla, el id de la clave
 
     $DB = new DBManager;
     $con = $DB->conexion();
@@ -62,8 +62,8 @@ class DB{
     foreach ($p_datos as $key => $value) {
       $valor[] = $key . "='" . $value."'";
     }
-
-    $sql  .= implode(', ',$valor);
+                                    // .= forma de concatenar(ver donde dejar espacio para que no se junte toda la consulta)
+    $sql  .= implode(', ',$valor); //implode una manera de concatenación de claves con valores (armar un string)
 
     $sql .= " WHERE $p_where";
 
@@ -84,7 +84,7 @@ class DB{
    return $data;
   }
 
-  function delete($p_table,$p_query){
+  function delete($p_table,$p_query){ //nombre de la tabla, clave primaria
     $DB = new DBManager;
     $con = $DB->conexion();
 
@@ -112,7 +112,6 @@ class DB{
     return $data;
 
 }
-*/
 
   function getAll($p_query){
     $DB = new DBManager;
@@ -125,7 +124,7 @@ class DB{
 
     //SE OBTIENE EL NOMBRE DE LAS COLUMNAS
     for ($i=0; $i < $numfields; $i++) {
-      $fieldname[$i] = mysqli_fetch_field_direct($consult, $i)->name;
+      $fieldname[$i] = mysqli_fetch_field_direct($consult, $i)->name; // mysqli_fetch_field_direct() se obtiene el nombre d elas columna
     }
 
     //SE CREA EL ARREGLO DEL TIPO KEY=>VALOR
@@ -133,7 +132,7 @@ class DB{
     while($row=$consult->fetch_array()){
         //Finally we assign the new variables
         for($i=0; $i < $numfields; $i++){
-            $datos[$fieldname[$i]] = $row[$fieldname[$i]];
+            $datos[$fieldname[$i]] = $row[$fieldname[$i]]; //fieldname es un arreglo de las columnas
        }
 
        array_push($result, $datos);
@@ -144,7 +143,7 @@ class DB{
 
   }
 
-  function execQuery($p_query){
+  function execQuery($p_query){ //saber si se ejecuto un query
     $DB = new DBManager;
     $con = $DB->conexion();
 
@@ -249,7 +248,7 @@ function rollback(){
   
 }
 
-function typeError($errno){
+function typeError($errno){ //Ir tipicando los errores en mysql
   $_typeError = null;
   switch($errno){
     case 1062:

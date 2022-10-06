@@ -8,7 +8,8 @@ include_once "./ReturnData.php";
 include_once "./DB.class.php";
 //require_once "Auth.php";
 
-$response = json_decode(file_get_contents('php://input'));
+//json_decode: convierte el json en un arreglo
+$response = json_decode(file_get_contents('php://input'));//Va obtener Todo lo que tenga desde las entradas desde el frontend 
 
 __DATA_RETURN($response);
 
@@ -64,3 +65,87 @@ function fnLogin($response){
     
 
 }
+
+function fnInsert($response){
+    try {
+        $DB = new DB;
+        //SET CAMPOS TABLA
+        $arrSQL = (array) $response->usuario;
+
+$result = $DB->insert($arrSQL,'tbl_usuarios');
+
+echo json_encode($result);
+
+    } catch (Exception $e) {
+        http_response_code(401);
+
+        echo json_encode(array(
+            "haserror" => true,
+            "message" => "Access denied.",
+            "error" => $e->getMessage()
+        ));
+    }
+}
+
+function fnUpdate($response){
+    try {
+        $DB = new DB;
+        //SET CAMPOS TABLA
+        $arrSQL = (array) $response->usuario;
+       
+        $result = $DB->update($arrSQL, 'tbl_usuarios', "id=".$response->id_usuario);
+
+    echo json_encode($result);
+
+    } catch (Exception $e) {
+        http_response_code(401);
+
+        echo json_encode(array(
+            "haserror" => true,
+            "message" => "Access denied.",
+            "error" => $e->getMessage()
+        ));
+    }
+}
+
+function fnDelete($response){
+    try{
+        $DB = new DB;
+        $arrSQL=$response->usuario;
+        $id=$response->usuario->id;
+        $result = $DB->update($arrSQL, "tbl_usuarios", "id=$id");
+        echo json_encode($result);
+    }catch(Exception $e){
+        http_response_code(401);
+        echo json_encode(array(
+            "haserror" => true,
+            "message" => "Access denied.",
+            "error" => $e->getMessage()
+        ));
+    }
+}
+
+function fnUpdatePWD($response){
+    try {
+        $DB = new DB;
+        //SET CAMPOS TABLA
+        $arrSQL = $response->usuario;
+
+        $correo=$response->usuario->correo;
+       
+        $result = $DB->update($arrSQL, "tbl_usuarios", "correo= '$correo'");
+
+    echo json_encode($result);
+
+    } catch (Exception $e) {
+        http_response_code(401);
+
+        echo json_encode(array(
+            "haserror" => true,
+            "message" => "Access denied.",
+            "error" => $e->getMessage()
+        ));
+    }
+}
+
+?>
