@@ -27,9 +27,9 @@ function fnUpdatePwd($response)
 
     try {
         $DB = new DB;
-        $arrSQL = array("password" => $pwd);
+        $arrSQL = array("password" => "md5('$pwd')");
         $correo = $response->correo;
-        $result = $DB->update($arrSQL, "tbl_usuarios", "correo='$correo'");
+        $result = $DB->updatePWD($arrSQL, "tbl_usuarios", "correo='$correo'");
 
         //Server settings
         $mail->SMTPDebug = 0;                                       //Enable verbose debug output
@@ -53,7 +53,7 @@ function fnUpdatePwd($response)
         $mail->Body    = 'Esta es su nueva contraseña ' . $pwd . '';
 
         $mail->send();
-        echo json_encode(['mensaje'=>'Mensaje enviado con éxito','data'=>['data'=>$result]]);
+        echo json_encode(['mensaje'=>'Mensaje enviado con éxito','data'=>['new_password'=>$result]]);
     } catch (Exception $e) {
         http_response_code(401);
         echo json_encode(array(

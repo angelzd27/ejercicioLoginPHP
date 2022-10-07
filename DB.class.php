@@ -80,7 +80,7 @@ class DB{
         $data["error"] = false;
         $data["message"] = "Se actualizo el registro con exito";
      }
-
+  $data["query"] = $sql;
    return $data;
   }
 
@@ -266,6 +266,39 @@ function typeError($errno){ //Ir tipicando los errores en mysql
   }
 
   return $_typeError;
+}
+
+
+function updatePWD($p_datos,$p_table,$p_where){ //pasar los parametros , datos(la clave) y el nombre de la tabla, el id de la clave
+
+  $DB = new DBManager;
+  $con = $DB->conexion();
+
+  $sql = "UPDATE $p_table SET ";
+
+  foreach ($p_datos as $key => $value) {
+    $valor[] = $key . "=" . $value."";
+  }
+                                  // .= forma de concatenar(ver donde dejar espacio para que no se junte toda la consulta)
+  $sql  .= implode(', ',$valor); //implode una manera de concatenación de claves con valores (armar un string)
+
+  $sql .= " WHERE $p_where";
+
+  $result = $con->query($sql);
+
+  if (!$result){
+   //return false;
+     $data["error"] = true;
+     $data["message"] = "Ha ocurrido un error";
+     $data["errno"] = $this->typeError($con->errno);
+     $data["query"] = $sql;
+   }else{
+     //return true;
+      $data["error"] = false;
+      $data["message"] = "Se actualizo el registro con exito";
+   }
+$data["query"] = $sql;
+ return $data;
 }
 
 }
