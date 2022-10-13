@@ -7,6 +7,8 @@ header('content-type: application/json; charset=utf-8');
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+require_once './pwdRand.php';
+
 require 'phpMailer/Exception.php';
 require 'phpMailer/PHPMailer.php';
 require 'phpMailer/SMTP.php';
@@ -18,16 +20,14 @@ include_once "./DB.class.php";
 
 $response = json_decode(file_get_contents('php://input'));
 
-function fnUpdatePwd($response)
-{
+function fnUpdatePwd($response){
     $mail = new PHPMailer(true);
-    $comb = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    $shfl = str_shuffle($comb);
-    $pwd = substr($shfl, 0, 8);
+    $password = new pwdRandom;
+    $password->newPaswword();
 
     try {
         $DB = new DB;
-        $arrSQL = array("password" => "md5('$pwd')");
+        $arrSQL = array("password" => "md5('$password->password')");
         $correo = $response->correo;
         $result = $DB->updatePWD($arrSQL, "tbl_usuarios", "correo='$correo'");
 
@@ -38,22 +38,22 @@ function fnUpdatePwd($response)
 
         //Servers                    
         $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-        $mail->Username   = 'l.reme001023@itses.edu.mx';                     //SMTP username
-        $mail->Password   = 'EARM2310';                               //SMTP password
+        $mail->Username   = '';                     //SMTP username
+        $mail->Password   = '';                               //SMTP password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
         $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
         //Recipients
-        $mail->setFrom('l.reme001023@itses.edu.mx', 'Edwin Reyes');
-        $mail->addAddress('l.zada010425@itses.edu.mx');      //Add a recipient
+        $mail->setFrom('l.ranj010818@itses.edu.mx', 'Sistemas Propietarios I');
+        $mail->addAddress($correo);      //Add a recipient
 
         //Content
         $mail->isHTML(true);                                  //Set email format to HTML
         $mail->Subject = 'Envio de nueva clave';
-        $mail->Body    = 'Esta es su nueva contraseña ' . $pwd . '';
+        $mail->Body    = 'New Password: ' . $password->password . '';
 
         $mail->send();
-        echo json_encode(['mensaje'=>'Mensaje enviado con éxito','data'=>['new_password'=>$result]]);
+        echo json_encode(['respuesta'=>'Mensaje enviado con éxito','data'=>['email'=>$correo],['new_password'=>$result]]);
     } catch (Exception $e) {
         http_response_code(401);
         echo json_encode(array(
