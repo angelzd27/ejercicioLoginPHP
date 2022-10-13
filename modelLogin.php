@@ -124,4 +124,22 @@ function fnDelete($response){
         ));
     }
 }
+
+function fnRegister($response){
+    try{
+        $DB = new DB;
+       
+        //Response: Esto es lo que va venir del JS 
+        $result = $DB->execSP("CALL nuevo_usuario('$response->nombre','$response->apellido_paterno', 
+        '$response->apellido_materno','$response->correo','$response->password','$response->perfil')");
+        echo json_encode($result);
+    }catch(Exception $e){
+        http_response_code(401);
+        echo json_encode(array(
+            "haserror" => true,
+            "message" => "Access denied.",
+            "error" => $e->getMessage()
+        ));
+    }
+}
 ?>
