@@ -22,13 +22,12 @@ $response = json_decode(file_get_contents('php://input'));
 
 function fnUpdatePwd($response){
     $mail = new PHPMailer(true);
-    $password = new pwdRandom;
-    $password->newPaswword();
+    $newPassword = $response->usuario->password;
 
     try {
         $DB = new DB;
-        $arrSQL = array("password" => "md5('$password->password')");
-        $correo = $response->correo;
+        $arrSQL = array("password" => "md5('$newPassword')");
+        $correo = $response->usuario->correo;
         $result = $DB->updatePWD($arrSQL, "tbl_usuarios", "correo='$correo'");
 
         //Server settings
@@ -44,13 +43,14 @@ function fnUpdatePwd($response){
         $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
         //Recipients
-        $mail->setFrom('l.ranj010818@itses.edu.mx', 'Sistemas Propietarios I');
+        $mail->setFrom('', 'Sistemas Propietarios I'); //add a email
         $mail->addAddress($correo);      //Add a recipient
 
         //Content
         $mail->isHTML(true);                                  //Set email format to HTML
         $mail->Subject = 'Envio de nueva clave';
-        $mail->Body    = 'New Password: ' . $password->password . '';
+        //$mail->Body    = 'New Password: ' . $password->password . '';
+        $mail->Body    = 'New Password: ' . $newPassword . '';
 
         $mail->send();
         echo json_encode(['respuesta'=>'Mensaje enviado con éxito','data'=>['email'=>$correo],['new_password'=>$result]]);
